@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import marked from 'marked'
 import '../static/css/AddArticle.css'
-import { Row, Col, Input, Select, Button, DatePicker } from 'antd'
+import { Row, Col, Input, Select, Button, DatePicker, message } from 'antd'
 import axios from 'axios'
 import servicePath from '../config/apiUrl'
 
@@ -73,6 +73,26 @@ function AddArticle(props) {
         setSelectType(value)
     }
 
+    const saveArticle = () => {
+        if (!selectedType) {
+            message.error('必须选择文章类别')
+            return false
+        } else if (!articleTitle) {
+            message.error('文章名称不能为空')
+            return false
+        } else if (!articleContent) {
+            message.error('文章内容不能为空')
+            return false
+        } else if (!introducemd) {
+            message.error('简介不能为空')
+            return false
+        } else if (!showDate) {
+            message.error('发布日期不能为空')
+            return false
+        }
+        message.success('检验通过')
+    }
+
     return (
         <div>
             <Row gutter={5}>
@@ -80,7 +100,11 @@ function AddArticle(props) {
                     <Row gutter={10} >
                         <Col span={20}>
                             <Input
+                                value={articleTitle}
                                 placeholder="博客标题"
+                                onChange={e => {
+                                    setArticleTitle(e.target.value)
+                                }}
                                 size="large" />
                         </Col>
                         <Col span={4}>
@@ -119,7 +143,7 @@ function AddArticle(props) {
                     <Row>
                         <Col span={24}>
                             <Button size="large">暂存文章</Button>&nbsp;
-                            <Button type="primary" size="large" >发布文章</Button>
+                            <Button type="primary" size="large" onClick={saveArticle} >发布文章</Button>
                             <br />
                         </Col>
                         <Col span={24}>
@@ -135,12 +159,11 @@ function AddArticle(props) {
                                 className="introduce-html"
                                 dangerouslySetInnerHTML={{ __html: '文章简介：' + introducehtml }} >
                             </div>
-                            <br /><br />
-                            <div className="introduce-html"></div>
                         </Col>
                         <Col span={12}>
                             <div className="date-select">
                                 <DatePicker
+                                    onChange={(date, dateString) => setShowDate(dateString)}
                                     placeholder="发布日期"
                                     size="large"
                                 />
