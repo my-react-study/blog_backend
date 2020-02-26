@@ -3,11 +3,31 @@ import '../static/css/ArticleList.css'
 import { List, Row, Col, Modal, message, Button, Switch } from 'antd';
 import axios from 'axios'
 import servicePath from '../config/apiUrl'
+import '../static/css/ArticleList.css'
 const { confirm } = Modal;
 
 function ArticleList(props) {
 
     const [list, setList] = useState([])
+    //进入页面时，获得博客文章的列表
+    useEffect(() => {
+        getArticleList()
+    }, [])
+
+    //得到文章列表
+    const getArticleList = () => {
+        axios({
+            method: 'get',
+            url: servicePath.getArticleList,
+            withCredentials: true,
+            header: { 'Access-Control-Allow-Origin': '*' }
+        }).then(
+            res => {
+                setList(res.data.list)
+            }
+        )
+    }
+
     return (
         <div>
             <List
